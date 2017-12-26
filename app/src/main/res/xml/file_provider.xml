@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 對應外部內存卡根目錄：Environment.getExternalStorageDirectory() -->
+    <files-path  path="/" name="crop_image" />
+    <external-path path="/" name="camera_photos" />
+</paths>
