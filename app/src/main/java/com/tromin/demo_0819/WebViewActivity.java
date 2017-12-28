@@ -137,7 +137,7 @@ public class WebViewActivity extends Activity
             {
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //表示對目標應用臨時授權該Uri所代表的文件
                 //通過FileProvider創建一個content類型的Uri，進行封裝
-                imageUri = FileProvider.getUriForFile(WebViewActivity.this, "com.tromin.myapp.fileprovider", file);
+                imageUri = FileProvider.getUriForFile(WebViewActivity.this, "com.tromin.demo_0819.fileprovider", file);
             } else
             {
                 //7.0以下，如果直接拿到相機返回的intent值，拿到的則是拍照的原圖大小，很容易發生OOM，所以我們同樣將返回的地址，保存到指定路徑，返回到Activity時，去指定路徑獲取，壓縮圖片
@@ -210,7 +210,7 @@ public class WebViewActivity extends Activity
         //
         Intent intent = new Intent("com.android.camera.action.CROP");
         File file = new File(Environment.getExternalStorageDirectory().getPath()+ "/" + DEFAULT_IMAGE_FILE_NAME);
-        Uri photoURI = FileProvider.getUriForFile(WebViewActivity.this, "com.tromin.myapp.fileprovider", file);
+        Uri photoURI = FileProvider.getUriForFile(WebViewActivity.this, "com.tromin.demo_0819.fileprovider", file);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)//android 7.0
         {
@@ -256,7 +256,7 @@ public class WebViewActivity extends Activity
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
                 {
                     File file = new File(Environment.getExternalStorageDirectory().getPath()+ "/" + DEFAULT_IMAGE_FILE_NAME);
-                    Uri newUri = FileProvider.getUriForFile(this, "com.tromin.myapp.fileprovider", file);
+                    Uri newUri = FileProvider.getUriForFile(this, "com.tromin.demo_0819.fileprovider", file);
                     if (isDebugMode) Log.i(sTAG,"onActivityResult=7.1="+newUri);
                     startCropImageActivity(newUri) ;
                 }
@@ -297,11 +297,12 @@ public class WebViewActivity extends Activity
                     if (isDebugView) imageView.setImageBitmap(bitmap);
                     try
                     {
-                        if (isDebugMode) Log.i(sTAG,"onActivityResult=9=");
                         SaveBitmap(bitmap) ;
+                        if (isDebugMode) Log.i(sTAG,"onActivityResult=9="+szImageCropFilename);
                         //將imagePath傳給unity
-                        UnityPlayer.UnitySendMessage("Main Camera","message",szImageCropFilename);
-                        if (isDebugMode == false) finish() ;
+                        UnityPlayer.UnitySendMessage("Canvas","getMessage",szImageCropFilename);
+//                                              if (isDebugMode == false) finish() ;
+                        finish() ;
                     }
                     catch (IOException e)
                     {
@@ -399,17 +400,18 @@ public class WebViewActivity extends Activity
         //Unity:Application.persistentDataPath => android: /data/data/Name/files
         //請大家一定要注意這個路徑的寫法， 前面一定要加 「File://」 不然無法讀取。
         String sPath = mContext.getFilesDir().getPath() ;//String sPath = "/mnt/sdcard/Android/data/" + sPackageName + "/files";
-        szImageCropFilename = java.util.UUID.randomUUID().toString();
+        szImageCropFilename = java.util.UUID.randomUUID().toString()+".png";
         try
         {
-            if (isDebugMode) Log.i(sTAG,"onActivityResult=A=SaveBitmap="+sPath);
             //查看這個路徑是否存在，如果並沒有這個路徑，創建這個路徑
             File destDir = new File(sPath);
             if (!destDir.exists())
             {
                 destDir.mkdirs();
+                if (isDebugMode) Log.i(sTAG,"onActivityResult=A=SaveBitmap="+sPath);
             }
             fOut = new FileOutputStream(sPath + "/" + szImageCropFilename) ;
+            if (isDebugMode) Log.i(sTAG,"onActivityResult=B=SaveBitmap="+sPath+"/" + szImageCropFilename);
         }
         catch (FileNotFoundException e)
         {
@@ -420,7 +422,7 @@ public class WebViewActivity extends Activity
         try
         {
             fOut.flush();
-            if (isDebugMode) Log.i(sTAG,"onActivityResult=B");
+            if (isDebugMode) Log.i(sTAG,"onActivityResult=C=done");
         }
         catch (IOException e)
         {
@@ -429,7 +431,7 @@ public class WebViewActivity extends Activity
         try
         {
             fOut.close();
-            if (isDebugMode) Log.i(sTAG,"onActivityResult=C");
+            if (isDebugMode) Log.i(sTAG,"onActivityResult=D=file close");
         }
         catch (IOException e)
         {

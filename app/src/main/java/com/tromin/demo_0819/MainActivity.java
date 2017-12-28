@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.unity3d.player.UnityPlayer;
@@ -72,6 +73,7 @@ public class MainActivity extends UnityPlayerActivity
     // 第三個參數是傳給函數的參數，目前只看到一個參數，並且是string的，自己傳進去轉吧
     public void AndroidCallUnity(String _objectName , String _functionName, String _content)
     {
+        Log.i("Tromin.TAG","onActivityResult=UnitySendMessage="+_objectName+","+_functionName+","+_content);
         UnityPlayer.UnitySendMessage(_objectName, _functionName, _content);
     }
 }
