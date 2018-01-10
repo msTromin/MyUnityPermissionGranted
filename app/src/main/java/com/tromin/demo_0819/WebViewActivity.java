@@ -268,6 +268,12 @@ public class WebViewActivity extends Activity
                 }
                 break;
             case REQUEST_CODE_CROP_IMAGE:// 處理裁剪結果
+                if (outputUri == null)
+                {
+                    File file = new File(Environment.getExternalStorageDirectory().getPath()+ "/" + DEFAULT_IMAGE_FILE_NAME);
+                    Uri photoURI = FileProvider.getUriForFile(WebViewActivity.this, "com.tromin.demo_0819.fileprovider", file);
+                    outputUri = photoURI.fromFile(file);
+                }
                 String imagePath = outputUri.getPath();
                 if (isDebugMode) Log.i(sTAG,"onActivityResult=8=CropDoneImage="+imagePath);
 /*
@@ -399,7 +405,7 @@ public class WebViewActivity extends Activity
         FileOutputStream fOut = null;
         //Unity:Application.persistentDataPath => android: /data/data/Name/files
         //請大家一定要注意這個路徑的寫法， 前面一定要加 「File://」 不然無法讀取。
-        String sPath = mContext.getFilesDir().getPath() ;//String sPath = "/mnt/sdcard/Android/data/" + sPackageName + "/files";
+        String sPath = getExternalFilesDir(null).getPath() ;
         szImageCropFilename = java.util.UUID.randomUUID().toString()+".png";
         try
         {
